@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -1496,14 +1497,35 @@ func (mgr *ModelDownloadMgr) buildDownloadCommand(download *model.ModelDownload,
 		disableXetCmd = "export HF_HUB_DISABLE_XET=1"
 	}
 	if download.Source == model.ModelSourceHuggingFace {
-		// The project image already contains this dependency. The fallback preserves
-		// compatibility with existing custom Python images used by open-source deployments.
+		// The official downloader image pins the Hub client version because the mirror
+		// pagination workaround below intentionally targets that verified API surface.
+		// Internal registries may mirror the image, but must preserve its contents.
 		installCmd = fmt.Sprintf(
-			`if ! python -c 'import huggingface_hub' >/dev/null 2>&1; then
-    echo "huggingface_hub is missing; installing the tested fallback version"
-    pip install --no-cache-dir 'huggingface_hub==%s'
-fi
-python -c 'import huggingface_hub; print("[TOOLS] huggingface_hub=" + huggingface_hub.__version__)'`,
+			`python - << 'PY'
+import sys
+
+try:
+    import huggingface_hub
+except ImportError as error:
+    print(
+        "[ERROR] huggingface_hub is missing; use crater-model-downloader:v1.0.0 or an exact mirror of it",
+        file=sys.stderr,
+        flush=True,
+    )
+    raise SystemExit(20) from error
+
+expected = %q
+actual = huggingface_hub.__version__
+print("[TOOLS] huggingface_hub=" + actual, flush=True)
+if actual != expected:
+    print(
+        "[ERROR] unsupported huggingface_hub version: expected {}, got {}; "
+        "use crater-model-downloader:v1.0.0 or an exact mirror of it".format(expected, actual),
+        file=sys.stderr,
+        flush=True,
+    )
+    raise SystemExit(20)
+PY`,
 			huggingFaceHubVersion,
 		)
 
@@ -1525,12 +1547,34 @@ repo_id = %q
 revision = %q
 repo_type = %q
 
+# Some mirrors return an absolute rel="next" Link URL pointing to huggingface.co.
+# Rewrite those next-page requests so pagination stays on the configured mirror
+# for repositories containing more than 1,000 entries.
+mirror = os.environ.get("HF_ENDPOINT", "https://huggingface.co").rstrip("/")
+upstream = "https://huggingface.co"
+if mirror != upstream:
+    try:
+        from huggingface_hub.utils import _pagination
+        original_get_next_page = _pagination._get_next_page
+    except (ImportError, AttributeError) as error:
+        raise RuntimeError(
+            "crater-model-downloader:v1.0.0 requires the pagination API from "
+            "huggingface_hub==1.23.0; rebuild or re-mirror the official downloader image"
+        ) from error
+
+    def get_next_page_via_configured_endpoint(response):
+        url = original_get_next_page(response)
+        if url and url.startswith(upstream + "/"):
+            print("[PAGINATION] rewriting next-page URL to configured Hugging Face endpoint", flush=True)
+            return mirror + url[len(upstream):]
+        return url
+
+    _pagination._get_next_page = get_next_page_via_configured_endpoint
+
 kwargs = {
     "repo_id": repo_id,
     "repo_type": repo_type,
     "local_dir": os.environ["OUT_DIR"],
-    "local_dir_use_symlinks": False,
-    "resume_download": True,
 }
 if revision:
     kwargs["revision"] = revision
@@ -2059,10 +2103,15 @@ func (mgr *ModelDownloadMgr) captureJobLogsToRecord(c *gin.Context, download *mo
 }
 
 func truncateDownloadLogTail(logs string, maxBytes int) string {
+	logs = strings.ToValidUTF8(logs, "\uFFFD")
 	if len(logs) <= maxBytes {
 		return logs
 	}
-	tail := logs[len(logs)-maxBytes:]
+	start := len(logs) - maxBytes
+	for start < len(logs) && !utf8.RuneStart(logs[start]) {
+		start++
+	}
+	tail := logs[start:]
 	if idx := strings.IndexByte(tail, '\n'); idx >= 0 && idx+1 < len(tail) {
 		return tail[idx+1:]
 	}
