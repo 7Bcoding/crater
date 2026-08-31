@@ -157,7 +157,7 @@ function LoginPage() {
               alt="FIBOCOM"
               className="h-4 w-auto shrink-0 object-contain"
             />
-            <span className="text-sm font-medium leading-none text-white/70" aria-hidden>
+            <span className="text-sm leading-none font-medium text-white/70" aria-hidden>
               ×
             </span>
             <button
