@@ -87,6 +87,10 @@ jobs:
         run: make docs
         shell: bash
 
+      - name: Fetch upstream release tags for forks
+        if: github.repository != 'raids-lab/crater'
+        run: git fetch --force https://github.com/raids-lab/crater.git "refs/tags/v*:refs/tags/v*"
+
       - name: Set version variables
         id: set-version
         run: bash ../hack/set-build-version.sh
