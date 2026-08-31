@@ -175,7 +175,7 @@ function LoginPage() {
           {/* 中间文字内容 */}
           <div className="relative flex h-full items-center justify-center">
             <div className="z-10 px-6 py-8 text-left text-white lg:px-16 lg:py-12">
-              <h1 className="mb-4 whitespace-pre-line text-5xl leading-tight font-semibold">
+              <h1 className="mb-4 text-5xl leading-tight font-semibold whitespace-pre-line">
                 {t('auth.welcomeMessage')}
               </h1>
               <DocsButton
