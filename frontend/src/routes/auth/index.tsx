@@ -16,6 +16,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { HelpCircle } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import {
@@ -84,6 +85,7 @@ export const Route = createFileRoute('/auth/')({
 })
 
 function LoginPage() {
+  const { t } = useTranslation()
   const searchParams = Route.useSearch()
   const { auth } = Route.useRouteContext()
   const [showSignup, setShowSignup] = useState(false)
@@ -149,17 +151,20 @@ function LoginPage() {
       <div className="bg-primary hidden lg:block dark:bg-slate-800/70">
         <div className="relative h-full w-full">
           {/* 顶部Logo */}
-          <div
-            className="absolute top-10 left-10 z-20 flex items-center text-lg font-medium"
-            title="Switch signup and login"
-          >
+          <div className="absolute top-10 left-10 z-20 flex items-center gap-6 text-lg font-medium">
             <button
-              className="flex h-14 w-full flex-row items-center justify-center text-white"
+              className="flex h-14 shrink-0 flex-row items-center justify-center text-white"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              title="Switch signup and login"
             >
               <CraterIcon className="mr-1.5 h-8 w-8" />
               <CraterText className="h-4" />
             </button>
+            <img
+              src="/fibocom-logo.png"
+              alt="FIBOCOM"
+              className="h-7 w-auto max-w-52 shrink-0 object-contain"
+            />
           </div>
           {/* 底部版权信息 */}
           <div className="absolute bottom-10 left-10 z-20">
@@ -170,12 +175,8 @@ function LoginPage() {
           {/* 中间文字内容 */}
           <div className="relative flex h-full items-center justify-center">
             <div className="z-10 px-6 py-8 text-left text-white lg:px-16 lg:py-12">
-              <h1 className="mb-4 text-5xl leading-tight font-semibold">
-                <span className="dark:text-primary">欢迎体验</span>
-                <br />
-                异构云资源混合调度
-                <br />
-                与智能运维平台
+              <h1 className="mb-4 text-5xl leading-tight font-semibold whitespace-pre-line">
+                {t('auth.welcomeMessage')}
               </h1>
               <DocsButton
                 variant="ghost"
