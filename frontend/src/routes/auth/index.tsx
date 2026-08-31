@@ -150,21 +150,24 @@ function LoginPage() {
       {/* 左侧部分 */}
       <div className="bg-primary hidden lg:block dark:bg-slate-800/70">
         <div className="relative h-full w-full">
-          {/* 顶部Logo */}
-          <div className="absolute top-10 left-10 z-20 flex items-center gap-6 text-lg font-medium">
+          {/* 顶部Logo：Fibocom × Crater */}
+          <div className="absolute top-10 left-10 z-20 flex items-center gap-3 text-lg font-medium">
+            <img
+              src="/fibocom-logo.png"
+              alt="FIBOCOM"
+              className="h-4 w-auto shrink-0 object-contain"
+            />
+            <span className="text-sm font-medium leading-none text-white/70" aria-hidden>
+              ×
+            </span>
             <button
-              className="flex h-14 shrink-0 flex-row items-center justify-center text-white"
+              className="flex h-8 shrink-0 flex-row items-center justify-center text-white"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               title="Switch signup and login"
             >
               <CraterIcon className="mr-1.5 h-8 w-8" />
               <CraterText className="h-4" />
             </button>
-            <img
-              src="/fibocom-logo.png"
-              alt="FIBOCOM"
-              className="h-7 w-auto max-w-52 shrink-0 object-contain"
-            />
           </div>
           {/* 底部版权信息 */}
           <div className="absolute bottom-10 left-10 z-20">
