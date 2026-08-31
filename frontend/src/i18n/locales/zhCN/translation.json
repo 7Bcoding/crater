@@ -203,6 +203,7 @@
   "adminJobOverview.statuses.succeeded.label": "成功",
   "adminJobOverview.successMessage": "操作成功",
   "adminJobOverview.title": "作业管理",
+  "auth.welcomeMessage": "欢迎体验广和通\n异构云资源混合调度\n与智能运维平台",
   "basicIframe.defaultTitle": "嵌入内容",
   "basicIframe.developmentMode.crossOrigin": "由于跨域限制，无法加载外部内容",
   "basicIframe.developmentMode.title": "开发模式 - 跨域限制",

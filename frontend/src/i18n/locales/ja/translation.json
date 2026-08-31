@@ -203,6 +203,7 @@
   "adminJobOverview.statuses.succeeded.label": "成功",
   "adminJobOverview.successMessage": "操作が成功しました",
   "adminJobOverview.title": "ジョブ管理",
+  "auth.welcomeMessage": "Fibocom異種クラウドリソース混合スケジューリング・インテリジェント運用プラットフォームへようこそ",
   "basicIframe.defaultTitle": "埋め込みコンテンツ",
   "basicIframe.developmentMode.crossOrigin": "クロスドメインの制限により、外部コンテンツを読み込めません",
   "basicIframe.developmentMode.title": "開発モード - クロスドメイン制限",

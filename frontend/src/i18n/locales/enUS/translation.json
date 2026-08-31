@@ -203,6 +203,7 @@
   "adminJobOverview.statuses.succeeded.label": "Succeeded",
   "adminJobOverview.successMessage": "Operation successful",
   "adminJobOverview.title": "Job Management",
+  "auth.welcomeMessage": "Welcome to Fibocom's Heterogeneous Cloud Resource Hybrid Scheduling and Intelligent Operations Platform",
   "basicIframe.defaultTitle": "Embedded Content",
   "basicIframe.developmentMode.crossOrigin": "Unable to load external content due to cross-origin restrictions",
   "basicIframe.developmentMode.title": "Development Mode - Cross-Domain Restrictions",

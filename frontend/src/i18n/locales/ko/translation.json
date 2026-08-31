@@ -202,6 +202,7 @@
   "adminJobOverview.statuses.succeeded.label": "성공",
   "adminJobOverview.successMessage": "작업 성공",
   "adminJobOverview.title": "작업 관리",
+  "auth.welcomeMessage": "Fibocom 이기종 클라우드 리소스 하이브리드 스케줄링 및 지능형 운영 플랫폼에 오신 것을 환영합니다",
   "basicIframe.defaultTitle": "임베드 콘텐츠",
   "basicIframe.developmentMode.crossOrigin": "크로스 도메인 제한으로 인해 외부 콘텐츠를 로드할 수 없습니다",
   "basicIframe.developmentMode.title": "개발 모드 - 크로스 도메인 제한",
