@@ -28,8 +28,8 @@ on:
 env:
   # Modified to use GHCR configuration
   REGISTRY: ghcr.io
-  # Set your Docker Hub username and repository name
-  REPOSITORY: raids-lab
+  # Publish images under this fork owner's GHCR namespace.
+  REPOSITORY: 7bcoding
   IMAGE_NAME: crater-frontend
 
 jobs:
@@ -82,9 +82,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch upstream release tags for forks
-        if: github.repository != 'raids-lab/crater'
-        run: git fetch --force https://github.com/raids-lab/crater.git "refs/tags/v*:refs/tags/v*"
+      - name: Fetch release tags for versioning
+        run: |
+          if ! git remote get-url upstream >/dev/null 2>&1; then
+            git remote add upstream https://github.com/raids-lab/crater.git
+          fi
+          git fetch upstream --tags --force
 
       - name: Set version variables
         id: set-version
@@ -201,8 +204,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
 
       - uses: quartx-analytics/ghcr-cleaner@v1
+        continue-on-error: true
         with:
-          owner-type: org # or user
+          owner-type: user
           token: ${{ secrets.PAT_TOKEN  }}
           repository-owner: ${{ github.repository_owner }}
           package-name: ${{ env.IMAGE_NAME }}
