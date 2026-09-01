@@ -155,7 +155,7 @@ function LoginPage() {
             <img
               src="/fibocom-logo.png"
               alt="FIBOCOM"
-              className="h-6 w-auto shrink-0 object-contain"
+              className="h-5 w-auto shrink-0 object-contain"
             />
             <span className="text-sm leading-none font-medium text-white/70" aria-hidden>
               ×
